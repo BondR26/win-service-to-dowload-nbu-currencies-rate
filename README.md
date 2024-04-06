@@ -1,0 +1,1 @@
+# win-service-to-dowload-nbu-currencies-rate
