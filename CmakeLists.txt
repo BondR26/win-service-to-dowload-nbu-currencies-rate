@@ -1,0 +1,42 @@
+cmake_minimum_required(VERSION 3.14)
+
+project(cool_project)
+
+enable_language(CXX)
+
+find_package(nlohmann_json REQUIRED)
+find_package(CURL REQUIRED)
+find_package(pugixml REQUIRED)
+
+file(GLOB_RECURSE COOL_PROJECT_SOURCE RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+	src/*)
+
+add_executable(${PROJECT_NAME} src/main.cpp ${COOL_PROJECT_SOURCE})
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/src
+	nlohmann_json::nlohmann_json
+	libcurl::libcurl
+	pugixml::pugixml)
+
+set_target_properties( ${PROJECT_NAME} PROPERTIES
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED YES
+        CXX_EXTENSIONS NO
+        )
+
+target_link_libraries (${PROJECT_NAME} PRIVATE
+	nlohmann_json::nlohmann_json
+	CURL::libcurl
+	pugixml::pugixml
+	)
+
+# Copying the executable to a run directory
+
+set(EXE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/run)
+
+add_custom_target(copy_executable
+		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${EXE_OUTPUT_DIRECTORY}
+		DEPENDS YourExecutable
+		COMMENT "Copying executable to ${EXE_OUTPUT_DIRECTORY}"
+)
